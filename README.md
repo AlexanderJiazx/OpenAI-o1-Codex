@@ -15,6 +15,18 @@ OpenAI o1 Codex is a simple interface for o1 models using OpenRouter API
    pip install Flask MarkupSafe openai markdown
    ```
 
+**Setup API key**
+   [Get your OpenRouter API key](https://openrouter.ai/settings/keys)
+
+   Set as system variables
+
+   ```bash
+export OPENROUTER_API_KEY='Your_API_KEY'
+```
+
+
+
+**Run**
 Run main.py
 Enter http://localhost:912/ in browser
 
