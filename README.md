@@ -1,4 +1,4 @@
-#OpenAI o1 Codex
+# OpenAI o1 Codex
 ---
 <img width="1105" alt="Screenshot 2024-09-18 at 12 15 00 AM" src="https://github.com/user-attachments/assets/b523f79b-8df2-4516-81e6-2a1afac0f6b0">
 
