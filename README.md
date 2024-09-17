@@ -29,6 +29,8 @@ export OPENROUTER_API_KEY='Your_API_KEY'
 
 
 Run main.py
+
+
 Enter http://localhost:912/ in browser
 
 
