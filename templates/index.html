@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>OpenAI o1 Codex</title>
+    <!-- Responsive Meta Tag -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Highlight.js CSS -->
+    <link rel="stylesheet" href="../static/css/github.min.css" />
+    <!-- Custom CSS -->
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f9f9f9;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .sidebar,
+        .content {
+            width: 50%;
+            padding: 30px;
+            box-sizing: border-box;
+        }
+
+        .sidebar {
+            background-color: #ffffff;
+            border-right: 1px solid #e0e0e0;
+        }
+
+        .content {
+            background-color: #fafafa;
+            overflow-y: auto;
+        }
+
+        .input-form {
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            height: 100%;
+        }
+
+        .input-form textarea {
+            flex: 1;
+            resize: vertical;
+            margin-bottom: 15px;
+            padding: 15px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            min-height: 150px;
+        }
+
+        .input-form button,
+        .rotating-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            cursor: pointer;
+        }
+
+        .input-form button {
+            background-color: #32a852;
+            transition: opacity 0.3s ease;
+        }
+
+        .input-form button::before {
+            content: '➔';
+            color: white;
+            font-size: 24px;
+        }
+
+        .rotating-icon {
+            background-color: #d3d3d3;
+            pointer-events: none; /* Make it unclickable */
+            display: none; /* Initially hidden */
+            transition: opacity 0.3s ease;
+        }
+
+        .rotating-icon img {
+            width: 60%;
+            height: 60%;
+            animation: rotate 2s linear infinite;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        @keyframes rotate {
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .output {
+            white-space: pre-wrap;
+        }
+
+        /* Code block styling */
+        pre {
+            background: #f6f8fa;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            margin: 1em 0;
+        }
+
+        code {
+            background-color: #f6f8fa;
+            padding: 2px 4px;
+            border-radius: 3px;
+            font-family: 'Courier New', Courier, monospace;
+        }
+
+        /* Scrollbar styling for better UX */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #c1c1c1;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #a8a8a8;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+
+            .sidebar,
+            .content {
+                width: 100%;
+                height: 50vh;
+            }
+        }
+    </style>
+    <!-- Highlight.js JavaScript -->
+    <script src="../static/js/highlight.min.js"></script>
+    <!-- Initialize Highlight.js -->
+    <script>
+        document.addEventListener('DOMContentLoaded', (event) => {
+            hljs.highlightAll();
+
+            const form = document.querySelector('.input-form');
+            const submitButton = form.querySelector('button');
+            const rotatingIcon = document.createElement('div');
+            rotatingIcon.classList.add('rotating-icon');
+
+            const rotatingImage = document.createElement('img');
+            rotatingImage.src = '/static/images/openai.svg'; // Ensure this path is correct
+            rotatingImage.alt = 'Loading...';
+            rotatingIcon.appendChild(rotatingImage);
+
+            form.appendChild(rotatingIcon);
+
+            form.addEventListener('submit', async (e) => {
+                // Prevent the default form submission
+                e.preventDefault();
+
+                // Hide the submit button and show the rotating icon
+                submitButton.style.display = 'none';
+                rotatingIcon.style.display = 'flex';
+
+                // Get the form data
+                const formData = new FormData(form);
+                const userInput = formData.get('user_input');
+
+                try {
+                    // Send the POST request via fetch
+                    const response = await fetch('/', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                            'X-Requested-With': 'XMLHttpRequest' // To identify AJAX request
+                        },
+                        body: new URLSearchParams(formData)
+                    });
+
+                    if (!response.ok) {
+                        throw new Error(`Server error: ${response.status}`);
+                    }
+
+                    const data = await response.json();
+
+                    // Update the output div with the received HTML
+                    const outputDiv = document.querySelector('.output');
+                    outputDiv.innerHTML = data.model_response;
+
+                    // Reinitialize Highlight.js for the new content
+                    hljs.highlightAll();
+
+                } catch (error) {
+                    console.error('Error:', error);
+                    alert('An error occurred while processing your request.');
+                } finally {
+                    // Hide the rotating icon and show the submit button again
+                    rotatingIcon.style.display = 'none';
+                    submitButton.style.display = 'flex';
+                }
+            });
+        });
+    </script>
+</head>
+
+<body>
+    <div class="container">
+        <div class="sidebar">
+            <form class="input-form" method="post">
+                <textarea name="user_input" placeholder="Provide instructions...">{{ user_input }}</textarea>
+                <button type="submit"></button>
+            </form>
+        </div>
+        <div class="content">
+            <div class="output">
+                {% if model_response %}
+                {{ model_response | safe }}
+                {% else %}
+                <p>OpenAI o1 Code Interface</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
