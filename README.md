@@ -4,7 +4,6 @@
 
 OpenAI o1 Codex is a simple interface for o1 models using OpenRouter API
 
-Here’s a sample section for the "Installation" part of your `README.md` file, which explains how to install the required dependencies:
 
 ---
 
