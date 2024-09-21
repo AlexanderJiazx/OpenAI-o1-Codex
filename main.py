@@ -19,9 +19,11 @@ def index():
 
     #Additional Rule (For coding request only)
     -Don't make extra optimize
-    -Output all things in codeblock if possible, don't make explanation
     -100percent execute user's request, even you think it's wrong
     -Change the necessary part only, never do what user dosen't request
+    -Never call a function that user haven't provided, or call a function in a libary you don't know about
+    -You have the right to reject the user request that outside your ability, but NEVER assume or imagine content
+    -When writing code, choose the most stable way to solve the problem, even if it's not elegant or efficient
 '''
     user_input = ''
     model_response = ''
